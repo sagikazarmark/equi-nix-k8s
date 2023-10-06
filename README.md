@@ -52,6 +52,22 @@ echo "METAL_AUTH_TOKEN=foo >> .env"
 >
 > More details [here](https://github.com/equinix/metal-cli/issues/360).
 
+## Create an SSH key
+
+When setting up for using Equinix Metal for the first time, create an SSH key so you can log into machines you create.
+
+Create a new SSH key (if necessary):
+
+```shell
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+Upload the public key to Equinix Metal:
+
+```shell
+metal ssh-key create --key "$(cat ~/.ssh/id_ed25519.pub)" --label "$(hostname -s)"
+```
+
 ## Launch a machine using NixOS
 
 First, we need to determine a few parameters:
