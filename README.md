@@ -136,6 +136,52 @@ Take not of the UUID of your instance, but you can always get it by listing the 
 metal device list
 ```
 
+## Deploy a single-node Kubernetes cluster
+
+```shell
+# Choose a name for your machine
+export NAME=name
+
+# Export the IP address as an env var
+export SSH_ADDR=
+
+mkdir -p hosts/$NAME/generated
+scp -r root@$SSH_ADDR:/etc/nixos/'*' ./hosts/$NAME/generated
+```
+
+_TODO(sagikazarmark): automate populating env vars based on machine details_
+
+Add the following to `flake.nix` under `nixosConfigurations`:
+
+```nix
+NAME = inputs.nixpkgs.lib.nixosSystem {
+    system = "x86_64-linux";
+
+    modules = [
+        ./modules/single-node/configuration.nix
+        ./hosts/NAME/generated/configuration.nix
+    ];
+};
+```
+
+_Don't forget to replace `NAME` with your `$NAME`_
+
+_TODO(sagikazarmark): simplify configuring a new machine_
+
+Run the following command to deploy Kubernetes:
+
+```shell
+deploy $NAME root@$SSH_ADDR
+```
+
+Check that Kubernetes is running:
+
+```shell
+ssh root@$SSH_ADDR k3s kubectl get ns
+```
+
+_TODO(sagikazarmark): set up local kube context_
+
 ## Cleanup
 
 Once you are done with testing an instance, you can delete it by running the following command:
