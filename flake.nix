@@ -14,6 +14,14 @@
       flake = {
         nixosConfigurations = {
           # ADD YOUR MACHINE CONFIGURATIONS HERE
+          nixos-test = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+
+            modules = [
+              ./modules/single-node/configuration.nix
+              ./hosts/nixos-test/generated/configuration.nix
+            ];
+          };
         };
       };
 
